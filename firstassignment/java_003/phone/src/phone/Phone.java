@@ -4,6 +4,16 @@ import java.util.*;
 
 
 public class Phone {
+	
+	//this function uses the class name of the same name to throw an exception
+	public static void BlankString(String line) throws EmptyException{
+		/*
+		 * If line is blank throws a new exception
+		 */
+		if(line.equals("")) {
+			throw new EmptyException("Empty String detected. ");
+		}
+	}
 
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
@@ -19,9 +29,14 @@ public class Phone {
 	    */
 		
 		// Using a fixed one for now
-		String [][] contacts= new String[5][3];
+		String [][] contacts= new String[6][3];
 		Scanner scan = new Scanner(System.in);
 		String inputString ="";
+		/*
+		 * Printstream objects that use a file and prints to it.
+		 */
+		PrintStream o = new PrintStream(new File("phone.txt"));
+		PrintStream console = System.out;
 		
 		contacts[0][0]="Name";
 		contacts[0][1]="Phone Number";
@@ -29,72 +44,92 @@ public class Phone {
 		
 		for (int row = 1; row < contacts.length; row++) {
 			for (int col = 0; col < contacts[row].length; col++) {
-				if(col==0){
-					System.out.println("Enter name: ");
+				try {
+					if(col==0){
+						System.out.println("Enter name: ");
+						inputString = scan.nextLine();
+						BlankString(inputString);
+						contacts[row][0]=inputString;
+						
+					}else if(col==1){
+						System.out.println("Enter phone number: ");
+						inputString = scan.nextLine();
+						BlankString(inputString);
+						contacts[row][1]=inputString;
+					}else if(col==2){
+						System.out.println("Enter city: ");
+						inputString = scan.nextLine();
+						BlankString(inputString);
+						contacts[row][2]=inputString;
+					}
+				}catch (Exception e) {
+					System.out.println("Exception found " + e);
+					System.out.println("Enter something!");
 					inputString = scan.nextLine();
-					contacts[row][0]=inputString;
-				}else if(col==1){
-					System.out.println("Enter phone number: ");
-					inputString = scan.nextLine();
-					contacts[row][1]=inputString;
-				}else if(col==2){
-					System.out.println("Enter city: ");
-					inputString = scan.nextLine();
-					contacts[row][2]=inputString;
+					contacts[row][col] = inputString;
 				}
 			}
+			
+//------------------------------------------------------------------------------------------------------------------------------------------------------
+			// give the option to exclude row
+			
+			System.out.println("You have entered: " + contacts[row][0] + "\t" + contacts[row][1] + "\t" + contacts[row][2]);
+			System.out.println("Do you want to keep this information? Y/N");
+			
+			// get userInput
+			inputString = scan.nextLine();
+			
+			if (inputString.equalsIgnoreCase("Y")) {
+				// user wants data continue as usual
+				continue;
+			} else {
+				// decrement counter to overwrite row
+				row--;
+			}
+			
 		}
+		
+//-------------------------------------------------------------------------------------------------------------------------------------
 		
 		// Print statement for header
-				
-		System.out.println("name  \t\t\tPhone Number \t\t\t Cityname");
-		System.out.println("");
-		// Print to console
-		for (int row = 1; row < contacts.length; row++) {
-			for (int col = 0; col < contacts[row].length; col++) {
-				// Above loops do iterates through the indexes rows and columns
-				
-				// prints name
-				if(col==0){
-					System.out.print(contacts[row][0] + "\t\t\t");					
-				
-				//prints number
-				}else if(col==1){
-					System.out.print(contacts[row][1] + "\t\t\t\t ");					
-									
-				// prints city	
-				}else if(col==2){
-					System.out.print(contacts[row][2] + "\t\t\t");				
-				}
+		System.out.println("Print to file(f), screen(s), or both(b)?");
+		inputString = scan.nextLine();
+		if(inputString.equalsIgnoreCase("s")) {
+			System.setOut(console);
+			System.out.println("name  \t\t\tPhone Number \t\t\t Cityname");
+			System.out.println("");
+			// Print to console
+			for (int row = 1; row < contacts.length; row++) {
+				System.out.println(contacts[row][0] + "\t\t\t" + contacts[row][1] + "\t\t\t\t" + contacts[row][2]);
+				// next line
+				System.out.println("\n"); // this line makes the rows go to the next line at the end of the row
 			}
-			// next line
-			System.out.println("\n"); // this line makes the rows go to the next line at the end of the row
-		}		
 		
+		} else if(inputString.equalsIgnoreCase("f")) {
+//-----------------------------------------------------------------------------------------------------------------------------------
 		// Print to file
-		BufferedWriter out = new BufferedWriter(new FileWriter("Phone Book"));
-		
-		for (int row = 1; row < contacts.length; row++) {
-			for (int col = 0; col < contacts[row].length; col++) {
-								
-				// writes name
-				if(col==0){
-					out.write(contacts[row][0] + "\t\t\t");					
-				
-				// writes number
-				}else if(col==1){
-					out.write(contacts[row][1] + "\t\t\t\t ");					
-									
-				// writes city	
-				}else if(col==2){
-					out.write(contacts[row][2] + "\t\t\t");				
-				}
+			System.setOut(o);
+			System.out.println("");
+			for (int row = 1; row < contacts.length; row++) {
+				System.out.println(contacts[row][0] + "\t\t\t" + contacts[row][1] + "\t\t\t\t" + contacts[row][2]);
+				// next line
+				System.out.println("\n"); // this line makes the rows go to the next line at the end of the row
 			}
-			// next line
-			System.out.println("\n"); // this line makes the rows go to the next line at the end of the row
+		
+		} else if(inputString.equalsIgnoreCase("b")) {
+			System.setOut(console);
+			for (int row = 1; row < contacts.length; row++) {
+				System.out.println(contacts[row][0] + "\t\t\t" + contacts[row][1] + "\t\t\t\t" + contacts[row][2]);
+				// next line
+				System.out.println("\n"); // this line makes the rows go to the next line at the end of the row
+			}
+			System.setOut(o);
+			for (int row = 1; row < contacts.length; row++) {
+				System.out.println(contacts[row][0] + "\t\t\t" + contacts[row][1] + "\t\t\t\t" + contacts[row][2]);
+				// next line
+				System.out.println("\n"); // this line makes the rows go to the next line at the end of the row
+			}
 		}
-		
-		
 		// Do both
 	}
 }
